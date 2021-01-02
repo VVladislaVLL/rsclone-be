@@ -16,9 +16,20 @@ interface RequestWithUser extends Request {
     login: string
   }
 }
+
+export const handlePassportUnauthorizedError = (
+  err: Error, _req: Request, _res: Response, next: NextFunction,
+) => {
+  try {
+    throw new ErrorHandler(401, err.message);
+  } catch (error) {
+    next(error);
+  }
+};
+
 router
   .route('/')
-  .all(passport.authenticate('jwt', { session: false }))
+  .all(passport.authenticate('jwt', { session: false, failWithError: true }), handlePassportUnauthorizedError)
   .get(async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const games = await gamesService.getGames();
@@ -41,22 +52,28 @@ router
 
 router
   .route('/mine')
-  .get(passport.authenticate('jwt', { session: false }), async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    try {
-      const games = await gamesService.getAllGamesByParams({ user: req.user.id });
-      if (games) {
-        res.json(games.map(gameSchema.statics.toResponse));
-      } else {
-        throw new ErrorHandler(404, 'game not found');
+  .get(passport.authenticate('jwt', { session: false, failWithError: true }),
+    handlePassportUnauthorizedError,
+    async (req: RequestWithUser, res: Response, next: NextFunction) => {
+      try {
+        const games = await gamesService.getAllGamesByParams({ user: req.user.id });
+        if (games) {
+          res.json(games.map(gameSchema.statics.toResponse));
+        } else {
+          throw new ErrorHandler(404, 'game not found');
+        }
+      } catch (error) {
+        next(error);
       }
-    } catch (error) {
-      next(error);
-    }
-  });
+    });
 
 router
   .route('/:id')
-  .all(validateUuid(), passport.authenticate('jwt', { session: false }))
+  .all(
+    validateUuid(),
+    passport.authenticate('jwt', { session: false, failWithError: true }),
+    handlePassportUnauthorizedError,
+  )
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const game = await gamesService.getOneGameById(req.params.id);

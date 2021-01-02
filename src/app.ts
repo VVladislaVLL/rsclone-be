@@ -1,18 +1,19 @@
 import express, {
   Request, Response, NextFunction,
 } from 'express';
-import logger from 'morgan';
+import morgan from 'morgan';
 import passport from 'passport';
 import userRouter from './routes/users/user.router';
 import authRouter from './routes/auth/auth.router';
 import gameRouter from './routes/games/game.router';
 import { handleError, ErrorHandler } from './errors/error';
+import { LoggerStream } from './logging/winston.logger';
 
 const app = express();
 
 app.use(express.json());
 
-app.use(logger('dev'));
+app.use(morgan('combined', { stream: LoggerStream }));
 
 app.use('/', (req: Request, res: Response, next: NextFunction) => {
   if (req.originalUrl === '/') {

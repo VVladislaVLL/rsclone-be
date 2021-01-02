@@ -5,10 +5,8 @@ import {
 import { ErrorHandler } from '../errors/error';
 
 const validateJoi = (schema: Schema) => (req: Request, _res: Response, next: NextFunction) => {
-  console.dir(req.body);
   const result = schema.validate(req.body);
   if (result.error) {
-    console.log(result);
     const err = new ErrorHandler(400, 'Invalid request body');
     next(err);
     return;
