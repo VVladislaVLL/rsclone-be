@@ -12,7 +12,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "allowSyntheticDefaultImports": true,
-    "allowJs": true
+    "allowJs": true,
+    "skipLibCheck": true
   },
   "include": [
     "src"
