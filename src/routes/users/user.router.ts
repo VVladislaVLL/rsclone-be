@@ -7,20 +7,24 @@ import usersService from './user.service';
 import { validateJoi, validateUuid } from '../../validation/validate';
 import schemas from './user.schemas';
 import { ErrorHandler } from '../../errors/error';
+import { handlePassportUnauthorizedError } from '../games/game.router';
 
 const router = express.Router();
 
 router
   .route('/')
-  .get(passport.authenticate('jwt', { session: false }), async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-      const users = await usersService.getUsers();
-      res.json(users.map(userSchema.statics.toResponse));
-      console.log(_req.user);
-    } catch (error) {
-      next(error);
-    }
-  });
+  .get(
+    passport.authenticate('jwt', { session: false, failWithError: true }),
+    handlePassportUnauthorizedError,
+    async (_req: Request, res: Response, next: NextFunction) => {
+      try {
+        const users = await usersService.getUsers();
+        res.json(users.map(userSchema.statics.toResponse));
+      } catch (error) {
+        next(error);
+      }
+    },
+  );
 
 router
   .route('/')
@@ -35,7 +39,11 @@ router
 
 router
   .route('/:id')
-  .all(validateUuid(), passport.authenticate('jwt', { session: false }))
+  .all(
+    validateUuid(),
+    passport.authenticate('jwt', { session: false, failWithError: true }),
+    handlePassportUnauthorizedError,
+  )
   .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = await usersService.getOneUserById(req.params.id);
