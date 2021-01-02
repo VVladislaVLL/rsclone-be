@@ -2,10 +2,11 @@ import express, {
   Request, Response, NextFunction,
 } from 'express';
 import logger from 'morgan';
+import passport from 'passport';
 import userRouter from './routes/users/user.router';
-import loginRouter from './routes/login/login.router';
+import authRouter from './routes/auth/auth.router';
+import gameRouter from './routes/games/game.router';
 import { handleError, ErrorHandler } from './errors/error';
-// import { checkJWT } from './jwt/jwt';
 
 const app = express();
 
@@ -21,10 +22,12 @@ app.use('/', (req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// app.use(checkJWT);
+app.use(passport.initialize());
+require('./routes/auth/auth.service');
 
 app.use('/users', userRouter);
-app.use('/login', loginRouter);
+app.use('/games', gameRouter);
+app.use('/auth', authRouter);
 
 app.use(() => {
   throw new ErrorHandler(404, 'Not found');

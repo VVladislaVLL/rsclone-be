@@ -7,7 +7,7 @@ const schemas = {
     password: string().required(),
   }),
   put: object().keys({
-    id: string(),
+    _id: string(),
     name: string(),
     login: string(),
     password: string(),

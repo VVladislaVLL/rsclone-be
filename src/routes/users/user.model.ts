@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import { uuid } from 'uuidv4';
 import mongoose, { Schema, model } from 'mongoose';
 import { hash as _hash, compare } from 'bcrypt';
 
@@ -8,14 +8,12 @@ export interface UserMongoose extends mongoose.Document {
   password: string;
   login: string;
   id: string;
-  name: string
 }
 
 export interface UserFromInput {
   password: UserMongoose['password'];
   login: UserMongoose['login'];
   id: UserMongoose['id'];
-  name: UserMongoose['name'];
 }
 
 export type ParamsObject = {[dynamic: string]: string | number | boolean};
@@ -25,7 +23,7 @@ export const userSchema = new Schema(
     name: String,
     login: String,
     password: String,
-    id: {
+    _id: {
       type: String,
       default: uuid,
     },
@@ -46,8 +44,8 @@ userSchema.methods.comparePassword = async function comparePw(receivedPassword: 
 };
 
 userSchema.statics.toResponse = (user: UserMongoose) => {
-  const { id, name, login } = user;
-  return { id, name, login };
+  const { id, login } = user;
+  return { id, login };
 };
 
 const User = model<UserMongoose>('User', userSchema);
