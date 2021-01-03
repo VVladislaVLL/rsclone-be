@@ -3,6 +3,9 @@ import express, {
 } from 'express';
 import morgan from 'morgan';
 import passport from 'passport';
+import swaggerUI from 'swagger-ui-express';
+import path from 'path';
+import YAML from 'yamljs';
 import userRouter from './routes/users/user.router';
 import authRouter from './routes/auth/auth.router';
 import gameRouter from './routes/games/game.router';
@@ -11,9 +14,13 @@ import { LoggerStream } from './logging/winston.logger';
 
 const app = express();
 
+const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
+
 app.use(express.json());
 
 app.use(morgan('combined', { stream: LoggerStream }));
+
+app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use('/', (req: Request, res: Response, next: NextFunction) => {
   if (req.originalUrl === '/') {

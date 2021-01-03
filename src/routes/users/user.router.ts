@@ -13,9 +13,11 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(
+  .all(
     passport.authenticate('jwt', { session: false, failWithError: true }),
     handlePassportUnauthorizedError,
+  )
+  .get(
     async (_req: Request, res: Response, next: NextFunction) => {
       try {
         const users = await usersService.getUsers();
@@ -24,10 +26,7 @@ router
         next(error);
       }
     },
-  );
-
-router
-  .route('/')
+  )
   .post(validateJoi(schemas.post), async (req: Request, res: Response, next: NextFunction) => {
     try {
       const newUser = await usersService.createUser(req.body);
