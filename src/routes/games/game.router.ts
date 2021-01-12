@@ -29,7 +29,6 @@ export const handlePassportUnauthorizedError = (
 
 router
   .route('/')
-  .all(passport.authenticate('jwt', { session: false, failWithError: true }), handlePassportUnauthorizedError)
   .get(async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const games = await gamesService.getGames();
@@ -40,6 +39,8 @@ router
   })
   .post(
     validateJoi(schemas.post),
+    passport.authenticate('jwt', { session: false, failWithError: true }),
+    handlePassportUnauthorizedError,
     async (req: RequestWithUser, res: Response, next: NextFunction) => {
       try {
         const newgame = await gamesService.createGame({ ...req.body, user: req.user.id });
