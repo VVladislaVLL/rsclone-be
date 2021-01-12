@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { JWT_SECRET_KEY } from '../../common/config';
+import { ErrorHandler } from '../../errors/error';
 import { UserFromInput } from '../users/user.model';
 import userService from '../users/user.service';
 
@@ -16,6 +17,11 @@ passport.use(
     },
     async (login, password, done) => {
       try {
+        const oldUser = await userService.getOneUserByParams({ login });
+        if (oldUser) {
+          const err = new ErrorHandler(409, 'Username is taken');
+          return done(err);
+        }
         const user = await userService.createUser({ login, password } as UserFromInput);
         return done(null, user);
       } catch (error) {
