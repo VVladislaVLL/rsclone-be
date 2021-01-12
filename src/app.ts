@@ -1,6 +1,7 @@
 import express, {
   Request, Response, NextFunction,
 } from 'express';
+import cors from 'cors';
 import morgan from 'morgan';
 import passport from 'passport';
 import swaggerUI from 'swagger-ui-express';
@@ -13,6 +14,8 @@ import { handleError, ErrorHandler } from './errors/error';
 import { LoggerStream } from './logging/winston.logger';
 
 const app = express();
+
+app.use(cors());
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
