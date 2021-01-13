@@ -5,7 +5,6 @@ export interface GameMongoose extends mongoose.Document {
   id: string;
   user: string;
   level: number;
-  suns: number;
   win: boolean;
   zombiesKilled: number;
   plantsPlanted: number;
@@ -15,7 +14,6 @@ export interface GameFromInput {
   id: GameMongoose['id'];
   user: GameMongoose['user'];
   level: GameMongoose['level'];
-  suns: GameMongoose['suns'];
   win: GameMongoose['win'];
   zombiesKilled: GameMongoose['zombiesKilled'];
   plantsPlanted: GameMongoose['plantsPlanted'];
@@ -31,7 +29,6 @@ export const gameSchema = new Schema(
     },
     user: String,
     level: Number,
-    suns: Number,
     win: Boolean,
     zombiesKilled: Number,
     plantsPlanted: Number,
@@ -41,10 +38,10 @@ export const gameSchema = new Schema(
 
 gameSchema.statics.toResponse = (game: GameMongoose) => {
   const {
-    level, suns, win, zombiesKilled, plantsPlanted,
+    level, win, zombiesKilled, plantsPlanted,
   } = game;
   return {
-    level, suns, win, zombiesKilled, plantsPlanted,
+    level, win, zombiesKilled, plantsPlanted,
   };
 };
 

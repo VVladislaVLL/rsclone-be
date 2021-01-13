@@ -27,8 +27,6 @@ components:
           type: string
         level:
           type: integer
-        suns:
-          type: integer
         win:
           type: boolean
         zombiesKilled:
@@ -205,9 +203,6 @@ paths:
                 level:
                   type: integer
                   description: Game level
-                suns:
-                  type: integer
-                  description: Collected suns
                 win:
                   type: boolean
                   description: Game won
@@ -290,9 +285,6 @@ paths:
                 level:
                   type: integer
                   description: Game level
-                suns:
-                  type: integer
-                  description: Collected suns
                 win:
                   type: boolean
                   description: Game won
