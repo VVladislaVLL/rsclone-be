@@ -4,7 +4,6 @@ import {
 
 const schemas = {
   post: object().keys({
-    user: string().required(),
     level: number().required(),
     win: boolean(),
     zombiesKilled: number(),
