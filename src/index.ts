@@ -3,18 +3,19 @@ import { PORT } from './common/config';
 import app from './app';
 import { connectToDB } from './db/db.client';
 import { ErrorHandler } from './errors/error';
+import { logError } from './logging/winston.logger';
 
 process
   .on('unhandledRejection', (reason: ErrorHandler) => {
     reason.statusCode = 500;
     reason.message = `Unhandled Rejection at Promise: ${reason.message}`;
-    console.error(reason);
+    logError(reason);
     process.exit(1);
   })
   .on('uncaughtException', (err: ErrorHandler) => {
     err.statusCode = 500;
     err.message = `Uncaught Exception: ${err.message}`;
-    console.error(err);
+    logError(err);
     process.exit(1);
   });
 

@@ -2,7 +2,6 @@ import express, {
   Request, Response, NextFunction,
 } from 'express';
 import cors from 'cors';
-import morgan from 'morgan';
 import passport from 'passport';
 import swaggerUI from 'swagger-ui-express';
 import path from 'path';
@@ -11,7 +10,8 @@ import userRouter from './routes/users/user.router';
 import authRouter from './routes/auth/auth.router';
 import gameRouter from './routes/games/game.router';
 import { handleError, ErrorHandler } from './errors/error';
-import { LoggerStream } from './logging/winston.logger';
+
+const { logRequest } = require('./logging/winston.logger');
 
 const app = express();
 
@@ -21,7 +21,7 @@ const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
 
-app.use(morgan('combined', { stream: LoggerStream }));
+app.use(logRequest);
 
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
