@@ -11,7 +11,7 @@
 
 ` $ git clone https://github.com/ellankz/rsclone-be `
 
-` $ cd rsclone-иу `
+` $ cd rsclone-be `
 
 ` $ npm install `
 
